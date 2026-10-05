@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>Copiloto WIN Live — Simulador</title>
+<style>
+:root{--bg:#06101c;--panel:#0b1725;--line:#17304a;--muted:#7f93a8;--text:#e8f0f7;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--amber:#f59e0b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#0b1b2f 0,#06101c 36%,#030810 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.app{max-width:1100px;margin:auto;padding:16px 14px 44px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+h1{margin:4px 0 0;font-size:28px;line-height:1}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;color:#fbbf24}.sub{font-size:13px;color:var(--muted);margin:6px 0 0}
+.badge{border:1px solid var(--line);background:#0a1726;padding:8px 10px;border-radius:999px;font-size:11px;display:flex;gap:7px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;background:#64748b}.dot.on{background:#4ade80;box-shadow:0 0 12px #4ade80}
+.signal{border:1px solid #29445f;border-radius:18px;padding:15px 16px;margin-bottom:10px;background:#102034}.signal.buy{background:#0a2a20;border-color:#176047}.signal.sell{background:#32151a;border-color:#71313a}.signal.closed{background:#33240f;border-color:#75511e}.signalTop{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:11px;letter-spacing:.08em}.signal strong{font-size:22px}.reason{font-size:13px;margin-top:5px;color:#c9d6e2}
+.grid{display:grid;gap:10px}.stats{grid-template-columns:repeat(5,1fr);margin-bottom:10px}.card{background:linear-gradient(180deg,#0c1928,#09131f);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.metric span,.label{display:block;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.metric b{display:block;font-size:21px;margin-top:5px}.metric small{font-size:11px;color:#8ea2b7}
+.main{grid-template-columns:1.4fr .6fr;margin-bottom:10px}.chartCard{padding:12px}.sectionHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}.sectionHead b{display:block;margin-top:3px}
+canvas{display:block;width:100%;height:300px;border-radius:12px;background:linear-gradient(180deg,#0d1a29,#08111c)}
+.levels{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:8px}.levels b{color:#e2e8f0}
+.controls label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}select{width:100%;margin-top:6px;background:#07131f;color:#edf4fa;border:1px solid var(--line);border-radius:10px;padding:10px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.buttons,.tradeButtons{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}button{border:1px solid #26415d;border-radius:10px;padding:10px;background:#102238;color:#eaf1f7;font-weight:750;cursor:pointer}button.primary{background:#1d4ed8;border-color:#3b82f6}.buyBtn{background:#0d5b37;border-color:#1f8d5b}.sellBtn{background:#712936;border-color:#a33d4b}button:disabled{opacity:.35;cursor:not-allowed}
+.risk{margin-top:12px}.pnl{font-size:30px;font-weight:850;margin:5px 0}.positive{color:#55e49a}.negative{color:#ff7a88}
+.track{height:8px;background:#15283b;border-radius:9px;overflow:hidden}.track>div{height:100%;width:40%;background:#64748b}.riskLegend{display:flex;justify-content:space-between;font-size:10px;color:#6f849a;margin-top:4px}.position{font-size:12px;margin-top:10px;color:#b9c7d5}
+.psych{margin-top:12px;border-radius:11px;padding:10px;font-size:12px;background:#0e2b23;color:#a7f3d0}.psych.warn{background:#3a260f;color:#fde3a7}.psych.danger{background:#39161d;color:#fecdd3}
+.discGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.discGrid span{display:block;font-size:10px;color:var(--muted)}.discGrid b{font-size:18px}
+.window{margin-top:12px;padding:10px;border-radius:12px;border:1px dashed #31506e;background:#0a1624;font-size:12px}.window strong{color:#93c5fd}
+.log{margin-top:10px}.logEmpty{font-size:12px;color:#70869b;padding:8px 0}.tradeRow{display:grid;grid-template-columns:1fr 1fr .7fr .7fr .7fr;gap:7px;padding:8px 0;border-top:1px solid #14283c;font-size:11px}
+.aiFeed{max-height:230px;overflow:auto;margin-top:9px}.aiLine{font-size:12px;padding:8px 0;border-top:1px solid #14283c;color:#c4d2df}.aiLine b{color:#93c5fd}
+footer{text-align:center;color:#50677e;font-size:10px;margin-top:12px}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.stats .metric:last-child{grid-column:1/-1}.main{grid-template-columns:1fr}.signalTop{align-items:flex-start;flex-direction:column}.signal strong{font-size:24px}canvas{height:230px}.tradeRow{grid-template-columns:1fr 1fr .8fr}.tradeRow span:nth-child(4),.tradeRow span:nth-child(5){display:none}header h1{font-size:23px}.badge{font-size:9px}.pnl{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div><div class="eyebrow">SIMULAÇÃO • SEM DINHEIRO REAL</div><h1>Copiloto WIN Live</h1><p class="sub">Laboratório cloud-first do Sócio Trader IA</p></div>
+<div class="badge"><i id="dot" class="dot"></i><span id="status">Pronto</span></div>
+</header>
+
+<section id="signalCard" class="signal">
+<div class="signalTop"><span>ESTADO OPERACIONAL</span><strong id="signal">AGUARDAR</strong></div>
+<div id="signalReason" class="reason">Inicie a simulação para formar contexto.</div>
+</section>
+
+<section class="grid stats">
+<div class="card metric"><span>WIN</span><b id="price">188.000</b><small id="priceChg">0 pts</small></div>
+<div class="card metric"><span>VWAP</span><b id="vwap">188.000</b><small id="distVwap">0 pts</small></div>
+<div class="card metric"><span>Delta 30s</span><b id="delta">0</b><small id="aggr">Neutro</small></div>
+<div class="card metric"><span>Book imbalance</span><b id="imb">1,00</b><small id="bookSide">Equilibrado</small></div>
+<div class="card metric"><span>Volatilidade</span><b id="vol">Baixa</b><small id="vel">0 neg/s</small></div>
+</section>
+
+<section class="grid main">
+<div class="card chartCard">
+<div class="sectionHead"><div><span class="label">Mercado sintético</span><b id="clock">10:15:00</b></div><small id="windowState">Janela principal 10h15–11h30</small></div>
+<canvas id="chart" width="900" height="360"></canvas>
+<div class="levels"><span>Máx <b id="high">188.000</b></span><span>Mín <b id="low">188.000</b></span><span>Range <b id="range">0 pts</b></span></div>
+</div>
+
+<div class="card controls">
+<span class="label">Motor de simulação</span>
+<div class="row2">
+<label>Cenário<select id="scenario"><option value="calm">Pacífico</option><option value="up">Tendência de alta</option><option value="down">Tendência de baixa</option><option value="chop">Lateral / chop</option><option value="news">Notícia / alta vol.</option></select></label>
+<label>Replay<select id="speed"><option value="1">1x</option><option value="5">5x</option><option value="20">20x</option></select></label>
+</div>
+<div class="buttons"><button id="start" class="primary">▶ Iniciar</button><button id="pause">⏸ Pausar</button><button id="reset">↺ Resetar</button></div>
+<div class="window"><strong>Plano atual</strong><br>1 WIN • alvo +300 pts = +R$60 • stop -200 pts = -R$40 • relação 1,5:1.</div>
+
+<div class="risk">
+<span class="label">P&L do dia</span><div id="pnl" class="pnl">R$ 0,00</div>
+<div class="track"><div id="pnlBar"></div></div><div class="riskLegend"><span>-R$40 STOP</span><span>+R$60 META</span></div>
+<div id="position" class="position">Sem posição</div>
+<div class="tradeButtons"><button id="buy" class="buyBtn">Comprar</button><button id="sell" class="sellBtn">Vender</button><button id="close">Zerar</button></div>
+</div>
+</div>
+</section>
+
+<section class="grid main">
+<div class="card">
+<div class="sectionHead"><span class="label">Diário de operações</span><button id="clearLog">Limpar</button></div>
+<div id="tradeLog" class="logEmpty">Nenhuma operação realizada.</div>
+</div>
+<div class="card">
+<span class="label">Disciplina & psicologia</span>
+<div class="discGrid"><div><span>Operações</span><b id="trades">0</b></div><div><span>Loss seguidos</span><b id="losses">0</b></div><div><span>MAE atual</span><b id="mae">0 pts</b></div><div><span>MFE atual</span><b id="mfe">0 pts</b></div></div>
+<div id="psych" class="psych">Plano limpo. Sem sinais de overtrade.</div>
+</div>
+</section>
+
+<section class="card">
+<div class="sectionHead"><span class="label">Leituras do Sócio Trader IA — motor local</span><small>simulado</small></div>
+<div id="aiFeed" class="aiFeed"></div>
+</section>
+
+<footer>Feed 100% sintético no navegador • Tick mínimo 5 pontos • 1 WIN = R$0,20/ponto</footer>
+</div>
+<script>
+(()=>{"use strict";
+const $=id=>document.getElementById(id);
+const E={price:$("price"),vwap:$("vwap"),delta:$("delta"),aggr:$("aggr"),imb:$("imb"),bookSide:$("bookSide"),vol:$("vol"),vel:$("vel"),high:$("high"),low:$("low"),range:$("range"),clock:$("clock"),signal:$("signal"),signalReason:$("signalReason"),signalCard:$("signalCard"),dot:$("dot"),status:$("status"),pnl:$("pnl"),pnlBar:$("pnlBar"),position:$("position"),trades:$("trades"),losses:$("losses"),mae:$("mae"),mfe:$("mfe"),psych:$("psych"),tradeLog:$("tradeLog"),priceChg:$("priceChg"),distVwap:$("distVwap"),windowState:$("windowState"),aiFeed:$("aiFeed")};
+const C={tick:5,pv:.2,target:60,stop:-40,start:188000};
+const SC={calm:{drift:0,vol:10,mean:.17},up:{drift:3.2,vol:17,mean:.08},down:{drift:-3.2,vol:17,mean:.08},chop:{drift:0,vol:25,mean:.28},news:{drift:0,vol:58,mean:.04}};
+let s;
+function fresh(){return{running:false,price:C.start,open:C.start,high:C.start,low:C.start,t:10*3600+15*60,hist:[],num:0,den:0,vwap:C.start,delta:0,vel:0,imb:1,real:0,pos:null,logs:[],lossStreak:0,lastExit:-999,ticks:0,closed:false,mae:0,mfe:0,lastState:"",ai:[]}}
+function rnd(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function rt(v){return Math.round(v/C.tick)*C.tick}
+function fmt(v){return Math.round(v).toLocaleString("pt-BR")}
+function cash(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function clock(){let t=s.t%86400,h=Math.floor(t/3600),m=Math.floor(t%3600/60),sec=t%60;return[h,m,sec].map(x=>String(x).padStart(2,"0")).join(":")}
+function seed(){for(let i=0;i<90;i++){let vol=20+Math.random()*70;s.num+=s.price*vol;s.den+=vol;s.vwap=s.num/s.den;s.hist.push({p:s.price,v:s.vwap})}}
+function reset(){s=fresh();seed();render()}
+function volLabel(){let r=s.high-s.low;return $("scenario").value==="news"||r>900?"Alta":r>450?"Média":"Baixa"}
+function step(){
+ if(!s.running||s.closed)return;
+ let c=SC[$("scenario").value],speed=+$("speed").value;
+ for(let k=0;k<speed;k++){s.ticks++;s.t++;let anchor=s.vwap||s.open;let pull=(anchor-s.price)*c.mean*.055;let shock=$("scenario").value==="news"&&Math.random()<.025?rnd()*130:0;let mv=c.drift+pull+rnd()*c.vol+shock;
+ s.price=rt(s.price+mv);s.high=Math.max(s.high,s.price);s.low=Math.min(s.low,s.price);let q=Math.max(1,Math.round(15+Math.abs(mv)*1.7+Math.random()*80));s.num+=s.price*q;s.den+=q;s.vwap=s.num/s.den;
+ let signed=Math.sign(mv||rnd())*q;s.delta=Math.round(s.delta*.86+signed);s.vel=Math.max(1,Math.round(Math.abs(mv)/5+q/20));s.imb=Math.max(.35,Math.min(2.8,1+s.delta/800+rnd()*.1));s.hist.push({p:s.price,v:s.vwap});if(s.hist.length>180)s.hist.shift();excursion()}
+ render();
+}
+function unreal(){if(!s.pos)return 0;let pts=(s.price-s.pos.entry)*(s.pos.side==="L"?1:-1);return pts*C.pv}
+function total(){return s.real+unreal()}
+function excursion(){if(!s.pos)return;let pts=(s.price-s.pos.entry)*(s.pos.side==="L"?1:-1);s.mfe=Math.max(s.mfe,pts);s.mae=Math.min(s.mae,pts)}
+function enter(side){if(!s.running||s.closed||s.pos)return;if(total()<=C.stop){end("Stop diário atingido.");return}s.pos={side,entry:s.price,time:clock(),rapid:s.ticks-s.lastExit<12};s.mae=0;s.mfe=0;render()}
+function close(){if(!s.pos)return;let p=s.pos,pts=(s.price-p.entry)*(p.side==="L"?1:-1),res=pts*C.pv;s.real+=res;s.logs.unshift({side:p.side,entry:p.entry,exit:s.price,res,mae:s.mae,mfe:s.mfe,time:clock(),rapid:p.rapid});s.lossStreak=res<0?s.lossStreak+1:0;s.lastExit=s.ticks;s.pos=null;s.mae=0;s.mfe=0;if(s.real<=C.stop){s.closed=true;s.running=false}else if(s.real>=C.target)s.running=false;render()}
+function end(){s.closed=true;s.running=false;render()}
+function state(){
+ if(s.closed)return["PREGÃO ENCERRADO","closed","Stop diário atingido. Novas entradas bloqueadas."];
+ if(s.real>=C.target)return["META BATIDA","closed","+R$60 ou mais realizados. Preservar resultado."];
+ if(!s.running)return["AGUARDAR","","Simulação pausada."];
+ let d=s.price-s.vwap,v=volLabel();
+ if(v==="Alta"&&Math.abs(d)<100)return["SEM TRADE","","Volatilidade alta sem estrutura limpa."];
+ if(d>80&&s.delta>120&&s.imb>1.12)return["COMPRA CONFIRMADA","buy","Preço acima da VWAP, delta e book compradores alinhados."];
+ if(d<-80&&s.delta<-120&&s.imb<.88)return["VENDA CONFIRMADA","sell","Preço abaixo da VWAP, delta e book vendedores alinhados."];
+ if(Math.abs(d)<45)return["AGUARDAR","","Preço próximo da VWAP: região de decisão."];
+ return["AGUARDAR","","Direção parcial, mas ainda sem alinhamento completo."];
+}
+function psych(){
+ if(s.closed)return["danger","Stop diário acionado. O sistema travou novas entradas."];
+ if(s.real>=C.target)return["","Meta atingida. Melhor trade pode ser encerrar o dia."];
+ if(s.logs.length>=5)return["danger","Overtrade: 5 ou mais operações."];
+ if(s.pos&&s.pos.rapid)return["warn","Reentrada muito rápida após a última saída."];
+ if(s.lossStreak>=2)return["warn","Dois losses seguidos. Atenção a revenge trade."];
+ return["","Plano limpo. Sem sinais de overtrade."];
+}
+function addAI(sig){
+ let key=sig[0]+"|"+Math.round(s.price/25); if(key===s.lastState)return;s.lastState=key;
+ let msg=sig[0]==="COMPRA CONFIRMADA"?"Fluxo comprador alinhado. Antes de clicar, valide se a invalidação técnica cabe em 200 pts.":sig[0]==="VENDA CONFIRMADA"?"Fluxo vendedor alinhado. Evite vender já esticado na mínima.":sig[0]==="SEM TRADE"?"Ruído/volatilidade incompatível com nosso risco. Ficar fora também é posição.":sig[0]==="META BATIDA"?"Meta do dia atingida. Prioridade agora é não devolver ao mercado.":sig[0]==="PREGÃO ENCERRADO"?"Limite de risco atingido. Regra decide por nós.":"Mercado ainda formando contexto. Sem necessidade de antecipar.";
+ s.ai.unshift({t:clock(),m:msg});if(s.ai.length>8)s.ai.pop();
+}
+function render(){
+ E.price.textContent=fmt(s.price);E.vwap.textContent=fmt(s.vwap);E.delta.textContent=(s.delta>0?"+":"")+s.delta;E.aggr.textContent=s.delta>100?"Comprador":s.delta<-100?"Vendedor":"Neutro";E.imb.textContent=s.imb.toFixed(2);E.bookSide.textContent=s.imb>1.12?"Comprador":s.imb<.88?"Vendedor":"Equilibrado";E.vol.textContent=volLabel();E.vel.textContent=s.vel+" neg/s";E.high.textContent=fmt(s.high);E.low.textContent=fmt(s.low);E.range.textContent=fmt(s.high-s.low)+" pts";E.clock.textContent=clock();E.priceChg.textContent=((s.price-s.open)>=0?"+":"")+fmt(s.price-s.open)+" pts";E.distVwap.textContent=((s.price-s.vwap)>=0?"+":"")+fmt(s.price-s.vwap)+" pts";
+ let hour=s.t/3600;E.windowState.textContent=hour>=10.25&&hour<=11.5?"● JANELA PRINCIPAL ATIVA":"Fora da janela principal 10h15–11h30";E.windowState.style.color=hour>=10.25&&hour<=11.5?"#86efac":"#94a3b8";
+ E.dot.className="dot"+(s.running?" on":"");E.status.textContent=s.closed?"Encerrado":s.running?"Rodando":"Pausado";
+ let sig=state();E.signal.textContent=sig[0];E.signalReason.textContent=sig[2];E.signalCard.className="signal "+sig[1];addAI(sig);
+ let p=total();E.pnl.textContent=cash(p);E.pnl.className="pnl "+(p>0?"positive":p<0?"negative":"");let pct=Math.max(0,Math.min(100,(p-C.stop)/(C.target-C.stop)*100));E.pnlBar.style.width=pct+"%";E.pnlBar.style.background=p>=C.target?"#22c55e":p<=C.stop?"#ef4444":"#64748b";E.position.textContent=s.pos?(s.pos.side==="L"?"Comprado":"Vendido")+" @ "+fmt(s.pos.entry)+" • flutuante "+cash(unreal()):"Sem posição";
+ E.trades.textContent=s.logs.length;E.losses.textContent=s.lossStreak;E.mae.textContent=Math.abs(Math.round(s.mae))+" pts";E.mfe.textContent=Math.round(s.mfe)+" pts";let ph=psych();E.psych.className="psych "+ph[0];E.psych.textContent=ph[1];
+ $("buy").disabled=s.closed||!s.running||!!s.pos;$("sell").disabled=s.closed||!s.running||!!s.pos;$("close").disabled=!s.pos;
+ if(!s.logs.length){E.tradeLog.className="logEmpty";E.tradeLog.innerHTML="Nenhuma operação realizada."}else{E.tradeLog.className="";E.tradeLog.innerHTML=s.logs.map(x=>'<div class="tradeRow"><span>'+x.time+' '+(x.side==="L"?"COMPRA":"VENDA")+'</span><span>'+fmt(x.entry)+' → '+fmt(x.exit)+'</span><span class="'+(x.res>=0?"positive":"negative")+'">'+cash(x.res)+'</span><span>MAE '+Math.abs(Math.round(x.mae))+'</span><span>MFE '+Math.round(x.mfe)+'</span></div>').join("")}
+ E.aiFeed.innerHTML=s.ai.map(x=>'<div class="aiLine"><b>'+x.t+'</b> '+x.m+'</div>').join("");
+ draw();
+}
+function draw(){let cv=$("chart"),ctx=cv.getContext("2d"),w=cv.width,h=cv.height;ctx.clearRect(0,0,w,h);if(s.hist.length<2)return;let vals=s.hist.flatMap(x=>[x.p,x.v]),min=Math.min(...vals)-40,max=Math.max(...vals)+40;if(max===min)max=min+1;let X=i=>12+i/(s.hist.length-1)*(w-24),Y=v=>h-14-(v-min)/(max-min)*(h-28);ctx.strokeStyle="#152a40";ctx.lineWidth=1;for(let i=1;i<5;i++){let y=i*h/5;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}ctx.strokeStyle="#f59e0b";ctx.lineWidth=2;ctx.beginPath();s.hist.forEach((d,i)=>i?ctx.lineTo(X(i),Y(d.v)):ctx.moveTo(X(i),Y(d.v)));ctx.stroke();ctx.strokeStyle="#e5edf5";ctx.lineWidth=3;ctx.beginPath();s.hist.forEach((d,i)=>i?ctx.lineTo(X(i),Y(d.p)):ctx.moveTo(X(i),Y(d.p)));ctx.stroke()}
+$("start").onclick=()=>{if(!s.closed)s.running=true;render()};$("pause").onclick=()=>{s.running=false;render()};$("reset").onclick=reset;$("buy").onclick=()=>enter("L");$("sell").onclick=()=>enter("S");$("close").onclick=close;$("clearLog").onclick=()=>{s.logs=[];s.lossStreak=0;render()};$("scenario").onchange=render;$("speed").onchange=render;
+setInterval(step,500);reset();
+})();
+</script>
+</body></html>
