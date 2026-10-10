@@ -2,6 +2,8 @@
 
 Este laboratório valida **APENAS** se Ubuntu x86_64 consegue criar um prefixo Wine 64-bit e executar **Python Windows x64** com ABI WinDLL/WINFUNCTYPE compatível com o pré-requisito básico da ProfitDLL.
 
+**RESULTADO 10/10/2026:** [GitHub Actions Ubuntu Wine execução 38052223324](https://github.com/vhbernardo11/CONTROLE_ESTOQUE_MOBILE/actions/runs/38052223324) **PASSOU**. Wine 9.0 do Ubuntu foi instalado, prefixo Win64 criado, Python Windows x64 3.13.15 executado e ABI validada com `WinDLL`, `WINFUNCTYPE`, ponteiros de 64 bits e `wchar_t` de 2 bytes. **ProfitDLL não foi carregada; dados de mercado e licença não testados.**
+
 A Nelogica publicou tutorial oficial: https://ajuda.nelogica.com.br/hc/pt-br/articles/54973527417243-ProfitDLL-no-Linux-Saiba-como-acessar-e-utilizar
 
 ## Motivo da mudança
