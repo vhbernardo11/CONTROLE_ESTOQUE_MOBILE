@@ -1,4 +1,4 @@
-import {makeSession,stepSession,scenarioLabels,SECURITY} from "./engine.js";
+import {makeSession,stepSession,evaluate,scenarioLabels,SECURITY} from "./engine.js";
 const $=id=>document.getElementById(id);
 const pt=n=>Math.round(n).toLocaleString("pt-BR");
 const two=n=>String(Math.floor(n)).padStart(2,"0");
@@ -49,7 +49,7 @@ function reportText(){
  "COPILOTO WIN 2.0 — SOMENTE DEMONSTRAÇÃO",
  "Cenário: "+scenarioLabels[S.scenario],
  "Fonte: SINTÉTICA (não é B3)",
- "Cálculo: API na nuvem",
+ "Cálculo: "+(S.cloudError?"DEMONSTRAÇÃO LOCAL (API indisponível)":"API na nuvem"),
  "Preço simulado: "+pt(a.price),
  "VWAP simulada: "+pt(a.vwap),
  "Delta sintético: "+a.delta,
@@ -74,12 +74,12 @@ function renderCloud(){
  $("operational-reason").textContent=S.cloudError?
    "API indisponível: nenhuma leitura de mercado é válida. SEM TRADE.":
    "Dados fictícios e trading real em pausa. Nenhuma operação é autorizada.";
- $("cloud-indicator").textContent="Servidor: "+(S.cloudOnline?"online":"não confirmado");
- $("tech-status").textContent=S.cloudError?"SEM ANÁLISE":(a?.technical||"AGUARDAR");
- $("tech-reason").textContent=S.cloudError?"Serviço de análise inacessível. Nenhum alerta é válido.":(a?.reason||"Inicie o replay para analisar uma amostra.");
- $("calculation-source").textContent=S.cloudError?"FALHA SEGURA":(a?"API NA NUVEM":"Aguardando API cloud");
+ $("cloud-indicator").textContent="API cloud: "+(S.cloudOnline?"online":"indisponível; demo local");
+ $("tech-status").textContent=S.cloudError?(a?.technical||"AGUARDAR")+" (DEMO LOCAL)":(a?.technical||"AGUARDAR");
+ $("tech-reason").textContent=S.cloudError?"API cloud indisponível. Demonstração calculada no navegador, sem dados B3. "+(a?.reason||""):(a?.reason||"Inicie o replay para analisar uma amostra.");
+ $("calculation-source").textContent=S.cloudError?"DEMO LOCAL — SEM API":(a?"API NA NUVEM":"Aguardando API cloud");
  $("analysis-clock").textContent=a?.timestamp?new Date(a.timestamp).toLocaleTimeString("pt-BR"):"—";
- $("api-analysis").textContent=S.cloudError?"Falha — seguro":(a?"API de análise ativa":"Não testada");
+ $("api-analysis").textContent=S.cloudError?"Demo local apenas — API ausente":(a?"API de análise ativa":"Não testada");
  setRisks(S.cloudError?["Conexão com API não confirmada.","Sem dados autorizados da B3.","Protocolo de pausa ativo."]:
    (a?.blocks||["Somente dados SINTÉTICOS, sem conexão B3.","Protocolo de pausa ativo."]));
  $("report-text").textContent=reportText();
@@ -127,7 +127,9 @@ async function cloudAnalysis(){
    showToast("Leitura DEMO: "+data.technical+". Decisão: SEM TRADE.");
   }
  }catch{
-  S.cloudError=true;S.lastCloud=null;S.lastTechnical=null;
+  S.cloudError=true;
+  S.lastCloud={...evaluate(S.session,{connectionError:true}),timestamp:new Date().toISOString(),calculatedOn:"DEMO_LOCAL"};
+  S.lastTechnical=null;
  }finally{
   S.pending=false;renderCloud();
  }
