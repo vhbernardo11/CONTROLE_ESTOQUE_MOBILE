@@ -1,0 +1,3 @@
+{"ticker":"WINV26","instante":"2026-10-09T13:15:00Z","preco":200000,"quantidade":2,"agressor":"COMPRA","bid_qty":120,"ask_qty":100}
+{"ticker":"WINV26","instante":"2026-10-09T13:15:01Z","preco":200010,"quantidade":1,"agressor":"VENDA","bid_qty":160,"ask_qty":100}
+{"ticker":"WINV26","instante":"2026-10-09T13:15:02Z","preco":200005,"quantidade":4,"agressor":"COMPRA","bid_qty":180,"ask_qty":150}
