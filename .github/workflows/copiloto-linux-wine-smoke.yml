@@ -1,0 +1,59 @@
+name: Copiloto WIN 2.0 - Linux Wine teste gratuito (SEM LOGIN)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/copiloto-v2-marketdata-readonly-20261010
+    paths:
+      - '.github/workflows/copiloto-linux-wine-smoke.yml'
+      - 'copiloto_v2/linux_wine/**'
+
+permissions:
+  contents: read
+
+jobs:
+  abi-check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      WINEARCH: win64
+      WINEDEBUG: -all
+      PROFITDLL_CLOUD_APPROVED: "no"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar Linux x86_64 sem segredos
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(uname -m)" = "x86_64"
+          echo "Linux x86_64 confirmado; nenhuma DLL ou credencial foi carregada."
+      - name: Instalar Wine de Ubuntu para teste preliminar
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends wine wine64 xvfb unzip wget ca-certificates
+          wine --version
+          echo "ATENCAO: a Nelogica documenta WineHQ 11; a versao apt Ubuntu nao prova compatibilidade ProfitDLL."
+      - name: Criar ambiente isolado 64 bits sem acessar Nelogica
+        shell: bash
+        run: |
+          set -euo pipefail
+          export WINEPREFIX="$RUNNER_TEMP/copiloto-win-v2-wine"
+          mkdir -p "$WINEPREFIX"
+          chmod 700 "$WINEPREFIX"
+          timeout 180s xvfb-run -a wineboot --init
+          grep -q "#arch=win64" "$WINEPREFIX/system.reg"
+          timeout 25s xvfb-run -a wine cmd /c ver
+          echo "Wine prefix Win64 criado, SEM DLL, SEM CREDENCIAIS, SEM ORDENS."
+      - name: Checar ABI Python Windows x64 rodando no Ubuntu
+        shell: bash
+        run: |
+          set -euo pipefail
+          export WINEPREFIX="$RUNNER_TEMP/copiloto-win-v2-wine"
+          mkdir -p "$RUNNER_TEMP/python-win"
+          wget -q --timeout=30 -O "$RUNNER_TEMP/python-win.zip" "https://www.python.org/ftp/python/3.13.15/python-3.13.15-embed-amd64.zip"
+          unzip -q "$RUNNER_TEMP/python-win.zip" -d "$RUNNER_TEMP/python-win"
+          cd "$RUNNER_TEMP/python-win"
+          timeout 35s xvfb-run -a wine ./python.exe -c 'import ctypes,struct,sys; assert sys.platform=="win32"; assert struct.calcsize("P")==8; assert ctypes.sizeof(ctypes.c_wchar)==2; assert hasattr(ctypes,"WinDLL"); assert hasattr(ctypes,"WINFUNCTYPE"); print("ABI Windows x64 OK sob Wine no Linux. SEM MARKET DATA.")'
+          echo "NAO FOI EXECUTADA OU CARREGADA A ProfitDLL.dll."
