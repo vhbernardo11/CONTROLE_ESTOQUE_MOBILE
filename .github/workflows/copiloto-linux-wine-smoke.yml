@@ -42,9 +42,17 @@ jobs:
           export WINEPREFIX="$RUNNER_TEMP/copiloto-win-v2-wine"
           mkdir -p "$WINEPREFIX"
           chmod 700 "$WINEPREFIX"
-          timeout 180s xvfb-run -a wineboot --init
-          grep -q "#arch=win64" "$WINEPREFIX/system.reg"
-          timeout 25s xvfb-run -a wine cmd /c ver
+          # Manter Xvfb vivo durante a criação e o encerramento do wineserver.
+          # Wine 9 pode retornar do wineboot antes de gravar system.reg.
+          timeout 180s xvfb-run -a bash -c '
+            set -e
+            wineboot --init
+            timeout 80s wineserver --wait
+            test -f "$WINEPREFIX/system.reg"
+            grep -q "#arch=win64" "$WINEPREFIX/system.reg"
+            timeout 25s wine cmd /c ver
+            timeout 30s wineserver --wait
+          '
           echo "Wine prefix Win64 criado, SEM DLL, SEM CREDENCIAIS, SEM ORDENS."
       - name: Checar ABI Python Windows x64 rodando no Ubuntu
         shell: bash
