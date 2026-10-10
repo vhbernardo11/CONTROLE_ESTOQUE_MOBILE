@@ -1,0 +1,35 @@
+name: WIN 2.0 - Windows cloud smoke (sem login)
+on:
+  push:
+    branches:
+      - feature/copiloto-v2-marketdata-readonly-20261010
+    paths:
+      - 'copiloto_v2/windows_cloud/**'
+      - '.github/workflows/copiloto-windows-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: windows-latest
+    timeout-minutes: 8
+    env:
+      # Nunca ler segredos nas rotinas automáticas de CI.
+      PROFITDLL_CLOUD_APPROVED: "no"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+      - name: Verificar simulacao de estados sem autenticar
+        working-directory: copiloto_v2/windows_cloud
+        shell: pwsh
+        run: |
+          python -m unittest discover -s tests -v
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          python marketdata_probe.py
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Write-Output 'Sem DLL, sem credenciais, sem login e SEM TRADE.'
