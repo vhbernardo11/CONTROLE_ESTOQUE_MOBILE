@@ -1,0 +1,17 @@
+{
+  "name": "Copiloto WIN 2.0 — Laboratório",
+  "short_name": "Copiloto WIN",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07111e",
+  "theme_color": "#07111e",
+  "description": "Replays sintéticos e análise de cenário na nuvem, sem ordens",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
