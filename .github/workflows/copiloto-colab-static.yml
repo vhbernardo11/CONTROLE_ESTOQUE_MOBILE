@@ -34,6 +34,13 @@ jobs:
               assert cell['cell_type']=='code'
               assert not cell['outputs']
               ast.parse(''.join(cell['source']), filename=f'cell_{i}.py')
+          # Validar também o código Python que a última célula grava como arquivo de handshake.
+          final_cell=''.join(notebook['cells'][-1]['source'])
+          final_ast=ast.parse(final_cell)
+          probe_src=next(node.value.value for node in final_ast.body
+                         if isinstance(node,ast.Assign) and isinstance(node.value,ast.Constant)
+                         and any(isinstance(t,ast.Name) and t.id=='source' for t in node.targets))
+          ast.parse(probe_src, filename='cloud_market_handshake.py')
           contents=p.read_text(encoding='utf-8')
           assert '31532251840' not in contents
           assert 'Vh010939' not in contents
