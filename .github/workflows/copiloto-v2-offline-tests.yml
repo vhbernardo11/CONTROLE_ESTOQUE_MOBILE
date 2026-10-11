@@ -1,0 +1,37 @@
+name: Copiloto WIN 2.0 - testes offline (cloud)
+on:
+  push:
+    branches:
+      - feature/copiloto-v2-marketdata-readonly-20261010
+    paths:
+      - 'copiloto_v2/**'
+      - '.github/workflows/copiloto-v2-offline-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Testes somente leitura e dados sinteticos
+        working-directory: copiloto_v2
+        run: python -m unittest discover -s tests -v
+      - name: Prova de politica sem autorizacao
+        working-directory: copiloto_v2
+        run: |
+          python cli.py examples/ticks_sinteticos.jsonl --replay-clock > response.json
+          python - <<'PY'
+          import json
+          x = json.load(open("response.json", encoding="utf-8"))
+          assert x["status"] == "SEM TRADE"
+          assert x["operacao_real_autorizada"] is False
+          assert x["roteamento_habilitado"] is False
+          print("Politica SEM TRADE e sem roteamento confirmada (dados sinteticos).")
+          PY

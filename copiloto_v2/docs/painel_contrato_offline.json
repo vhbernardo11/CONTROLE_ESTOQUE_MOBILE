@@ -1,0 +1,26 @@
+{
+  "contract_version": "0.1-offline",
+  "deployment": "NOT_DEPLOYED",
+  "feed": {
+    "origin": "NONE",
+    "connection": "DISCONNECTED",
+    "authenticated": false,
+    "timestamp": null,
+    "is_live": false
+  },
+  "analysis": {
+    "state": "SEM TRADE",
+    "directional_hypothesis": null,
+    "reference_price": null,
+    "invalidation": null,
+    "evidence": [],
+    "veto_reason": "SEM DADOS REAIS VALIDOS",
+    "updated_at": null
+  },
+  "controls": {
+    "market_data_only": true,
+    "order_routing_enabled": false,
+    "manual_execution_only": true,
+    "real_trading_suggested": false
+  }
+}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08111e"><title>Histórico | Copiloto WIN 2.0</title>
+<style>
+:root{color-scheme:dark;--bg:#07111e;--card:#102135;--line:#274258;--muted:#9ab0c4;--white:#eef6ff;--good:#54ddb1;--bad:#ff8a92}
+*{box-sizing:border-box}body{background:radial-gradient(ellipse at top,#163450 0%,var(--bg) 47%);font:14px/1.5 system-ui,-apple-system,Arial,sans-serif;color:var(--white);margin:0}
+main{max-width:860px;margin:0 auto;padding:18px 15px 72px}
+nav{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0 15px}
+a{color:#9ecbff;text-decoration:none}nav strong{font-size:14px}.eye{font-size:10px;color:#a6b7cd;letter-spacing:.13em;font-weight:800}
+h1{margin:3px 0 5px;letter-spacing:-.05em;font-size:29px;line-height:1.1}h2{font-size:17px;margin:0 0 10px}
+.lead,.small{color:var(--muted)}.lead{font-size:13px;margin:0 0 15px}
+.card{padding:17px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(140deg,#102239,#0b1828);margin:12px 0}
+.rule{border:1px solid #386174;color:#cce5f0;background:#163041;border-radius:12px;padding:11px 12px;font-size:12px}
+.rule b{color:#8cf1c6}.rule.danger{background:#322129;border-color:#673744;color:#ffd8df}.rule.danger b{color:#ffabb8}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{background:#0a1a2d;border:1px solid #29445f;border-radius:13px;padding:13px;min-height:88px}
+.metric small{display:block;color:#9bb2c6;font-size:10px;letter-spacing:.06em}.metric b{display:block;font-size:21px;margin-top:5px;letter-spacing:-.02em}.negative{color:var(--bad)}.positive{color:var(--good)}
+.legend{font-size:12px;color:var(--muted);margin:9px 0}
+#equity{height:210px;width:100%;background:#08182a;border-radius:12px;border:1px solid #274258}
+.table-wrap{overflow-x:auto}.data{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
+.data th{text-align:left;color:#90abc5;font-size:10px;letter-spacing:.05em}.data td,.data th{padding:10px 7px;border-bottom:1px solid #284056;white-space:nowrap}
+.data td:nth-child(2){text-align:right;font-weight:700}.data td:nth-child(3){color:#98abc1;font-size:10px}.data th:nth-child(2){text-align:right}
+section{scroll-margin-top:15px}label{display:block;color:#c0d6e5;font-weight:750;font-size:12px;margin:10px 0 5px}
+input[type=file]{width:100%;border:1px dashed #44617c;background:#11283d;border-radius:12px;padding:14px;font-size:13px;color:#cad9e8}
+button{font:inherit;cursor:pointer;min-height:44px;border-radius:10px;padding:9px 14px;background:#2b75c6;border:1px solid #5995d7;color:#fff;font-weight:800}
+button:disabled{opacity:.45;cursor:not-allowed}.ghost{background:#172f49;border:1px solid #2d5278;color:#c7e0f8}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:13px 0}
+#upload-status{color:#9ec2d3;font-size:12px;min-height:24px}pre{font:11px/1.7 ui-monospace,Consolas,monospace;padding:13px;background:#071626;border:1px solid #203c57;border-radius:10px;white-space:pre-wrap;word-break:break-word;overflow:auto;color:#bccee0}
+.footnote{font-size:11px;color:#8ea6bc}.sep{margin:18px 0;border:none;border-top:1px solid #23415e}.badge{display:inline-block;font-size:10px;color:#ffe1bb;border:1px solid #6c573e;background:#423018;border-radius:40px;padding:4px 9px;margin-left:5px}
+#market-report[hidden]{display:none}
+@media(min-width:670px){.stats{grid-template-columns:repeat(4,1fr)}h1{font-size:35px}}
+</style></head>
+<body><main>
+<nav><a href="./">← Voltar ao Copiloto</a><strong>🛡️ Estudos históricos</strong></nav>
+<div class="eye">RENDA EXTRA DT · PESQUISA QUANTITATIVA</div>
+<h1>Histórico de pregões</h1>
+<p class="lead">Compare nossos resultados oficiais e analise arquivos de candles reais quando estiverem disponíveis. Nenhuma operação é enviada à corretora.</p>
+<div class="rule danger"><b>⛔ SEM TRADE</b> · A ProfitDLL ainda não está conectada; nenhum sinal deste módulo autoriza negociação.</div>
+
+<section class="card">
+ <div class="eye">RESULTADOS DA EMPRESA · CONFIRMADOS POR NOTAS/CONTROLE</div>
+ <h2>O que realmente aconteceu nos nossos pregões</h2>
+ <p class="small">Esses resultados são do <b>nosso financeiro</b>, não representam o gráfico ou o fluxo do WIN.</p>
+ <div class="stats">
+ <div class="metric"><small>RESULTADO TOTAL</small><b id="net">Carregando</b></div>
+ <div class="metric"><small>PREGÕES OPERADOS</small><b id="days">—</b></div>
+ <div class="metric"><small>MÉDIA DIA POSITIVO</small><b id="mean-win">—</b></div>
+ <div class="metric"><small>MÉDIA DIA NEGATIVO</small><b id="mean-loss">—</b></div>
+ </div>
+ <p id="diagnosis" class="legend">Buscando os dados do servidor privado...</p>
+ <svg id="equity" role="img" aria-label="Resultado líquido acumulado da EMPRESA" viewBox="0 0 600 210"></svg>
+ <p class="footnote">Acumulado considera zero como ponto de partida. Custos já integram os valores líquidos das notas. A retenção IRRF de 08/10 ainda depende de conferência.</p>
+ <div class="table-wrap"><table class="data"><thead><tr><th>Data</th><th>Líquido (R$)</th><th>Comprovante</th></tr></thead><tbody id="table-days"><tr><td colspan="3">Carregando histórico...</td></tr></tbody></table></div>
+ <p id="official-state" class="footnote"></p>
+</section>
+
+<section class="card">
+ <div class="eye">ESTUDO DE MERCADO · ARQUIVO DO USUÁRIO</div>
+ <h2>Importar candles de outros dias</h2>
+ <p class="small">Selecione um CSV de candles do WIN com data, horário, contrato, OHLC e volume. Os dados serão processados temporariamente pelo motor na nuvem, <b>sem gravação em banco</b>. Envie somente arquivos cujo uso remoto seja permitido pela sua licença.</p>
+ <div class="rule"><b>Sem arquivo real, sem conclusão de mercado.</b> Não utilizamos os preços fictícios do simulador para validar estratégias.</div>
+ <label for="file">Arquivo CSV (máx. 1500 candles, 500 KB)</label>
+ <input id="file" type="file" accept=".csv,text/csv,text/plain">
+ <div class="actions">
+  <button id="analyze-file">Analisar na nuvem</button>
+  <button id="download-template" class="ghost">Baixar modelo CSV vazio</button>
+ </div>
+ <div id="upload-status" role="status">Nenhum arquivo importado.</div>
+ <p class="footnote"><b>Colunas obrigatórias (separador ;):</b> data;hora;ativo;abertura;maxima;minima;fechamento;volume<br>
+ Data ISO (AAAA-MM-DD), horário de São Paulo (HH:mm:ss), ativo como WINV26 ou WINZ26, preços em pontos com incremento de 5, volume em contratos inteiros positivos. Dados ordenados cronologicamente. Não misture contratos dentro de um dia.</p>
+ <pre>data;hora;ativo;abertura;maxima;minima;fechamento;volume</pre>
+</section>
+
+<section class="card" id="market-report" hidden>
+ <div class="eye">RESULTADO DA ANÁLISE REMOTA · DADOS ENVIADOS</div>
+ <h2>Comparativo entre pregões</h2>
+ <p class="footnote" id="market-source">Origem informada: arquivo enviado pelo usuário, não autenticado pela B3.</p>
+ <div class="stats">
+  <div class="metric"><small>DIAS ESTUDADOS</small><b id="m-days">—</b></div>
+  <div class="metric"><small>CANDLES VERIFICADOS</small><b id="m-candles">—</b></div>
+ </div>
+ <div class="table-wrap"><table class="data"><thead><tr><th>Data / Ativo</th><th>Variação do dia</th><th>Amplitude</th><th>Quantidade candles</th></tr></thead><tbody id="table-market"></tbody></table></div>
+ <div id="market-insight"></div>
+ <div class="rule danger"><b>Sem validação de estratégia ou indicação de entrada.</b> O cálculo de preço típico ponderado por volume é apenas uma aproximação, não a VWAP real tick a tick. Não calculamos delta com candles.</div>
+</section>
+<hr class="sep">
+<p class="footnote">Fontes: notas Santander e Central Financeira no Notion; dados de mercado apenas por arquivos efetivamente importados. Sem operações automáticas. Sem armazenamento dos candles importados.</p>
+</main><script type="module" src="./historico.js"></script></body></html>

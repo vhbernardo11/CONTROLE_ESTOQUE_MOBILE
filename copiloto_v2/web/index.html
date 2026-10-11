@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <meta name="theme-color" content="#08111e">
+ <meta name="description" content="Copiloto WIN 2.0: laboratório mobile na nuvem, sem dados B3 e sem ordens automáticas.">
+ <title>Copiloto WIN 2.0 • Laboratório</title>
+ <link rel="icon" href="./icon.svg" type="image/svg+xml">
+ <link rel="manifest" href="./manifest.webmanifest">
+ <link rel="stylesheet" href="./styles.css">
+ <script type="module" src="./app.js"></script>
+</head>
+<body>
+ <div class="app-shell">
+  <header class="topbar">
+   <div class="identity"><div class="brandmark" aria-hidden="true">◈</div><div><div class="eyebrow">RENDA EXTRA DT</div><h1>Copiloto WIN <span>2.0</span></h1></div></div>
+   <div class="live-tag"><i></i> DEMONSTRAÇÃO</div>
+  </header>
+  <aside class="security-note" role="status"><strong>🛡️ Sem dinheiro real</strong> <span>Motor na nuvem • Mercado simulado • Ordens exclusivamente manuais, fora deste sistema</span></aside>
+  <main>
+   <a href="https://copiloto-win-20-api.hatchable.site/nuvem.html" style="display:flex;align-items:center;justify-content:space-between;padding:13px 15px;margin:0 0 10px;border:1px solid #2e6175;background:#13313e;border-radius:13px;color:#cbebff;text-decoration:none;font-weight:800;font-size:13px">☁️ Laboratório ProfitDLL na nuvem <span aria-hidden="true">↗</span></a>
+   <a href="https://copiloto-win-20-api.hatchable.site/historico.html" style="display:flex;align-items:center;justify-content:space-between;padding:13px 15px;margin:0 0 15px;border:1px solid #2e6175;background:#13313e;border-radius:13px;color:#cbebff;text-decoration:none;font-weight:800;font-size:13px">📚 Estudar pregões anteriores <span aria-hidden="true">↗</span></a>
+   <section class="screen active" id="screen-painel" aria-label="Painel de mercado">
+    <div class="pagehead"><p>VISÃO GERAL</p><h2>Mercado sob controle.</h2><span>O sistema pode identificar um cenário. Isso não significa autorização para operar.</span></div>
+    <div class="signal-card">
+     <div class="signal-head"><span>DECISÃO OPERACIONAL</span><span class="pill red">TRAVA ATIVA</span></div>
+     <div class="signal-main"><span class="signal-icon">⛔</span><strong id="operational">SEM TRADE</strong></div>
+     <div class="signal-expl" id="operational-reason">Somente dados fictícios. O trading real está desabilitado.</div>
+     <div class="signal-footer"><span>Ordem automática: <b>NUNCA</b></span><span id="cloud-indicator">Servidor: verificando…</span></div>
+    </div>
+    <div class="grid metrics">
+     <article class="metric"><span>PREÇO SIMULADO</span><b id="price">188.000</b><small id="change">0 pontos</small></article>
+     <article class="metric"><span>VWAP SINTÉTICA</span><b id="vwap">—</b><small id="distance">Aguardando</small></article>
+     <article class="metric"><span>DELTA 30 TICKS</span><b id="delta">—</b><small id="aggressor">Aguardando</small></article>
+     <article class="metric"><span>BOOK IMBALANCE</span><b id="imbalance">—</b><small>Estimativa fictícia</small></article>
+    </div>
+    <article class="panel chart-panel">
+     <div class="heading-row"><div><span class="eyebrow">REPLAY SINTÉTICO</span><h3>Comportamento do preço</h3></div><div class="mini-tag" id="time">10:15:00</div></div>
+     <div class="chart-legend"><span><i class="key price"></i>Preço fictício</span><span><i class="key vwap"></i>VWAP fictícia</span></div>
+     <canvas id="chart" width="680" height="285" aria-label="Gráfico simulado de preço e VWAP" role="img"></canvas>
+     <div class="chart-bottom"><span>Máx. <b id="high">188.000</b></span><span>Mín. <b id="low">188.000</b></span><span id="samples">0 eventos</span></div>
+    </article>
+    <article class="panel control-panel">
+     <div class="heading-row"><div><span class="eyebrow">LABORATÓRIO</span><h3>Reproduzir cenários</h3></div><span class="pill neutral">SEM B3</span></div>
+     <div class="control-grid"><label>Cenário de teste<select id="scenario"><option value="alta">Tendência de alta</option><option value="baixa">Tendência de baixa</option><option value="lateral">Mercado lateral</option><option value="volatil">Volatilidade elevada</option></select></label>
+      <label>Velocidade do replay<select id="speed"><option value="1">1×</option><option value="4">4×</option><option value="10">10×</option></select></label></div>
+     <div class="control-actions"><button class="btn primary" id="start">▶ Iniciar</button><button class="btn outline" id="pause" disabled>⏸ Pausar</button><button class="btn outline" id="reset">↻ Reiniciar</button></div>
+     <p class="hint">Todos os preços e negócios desta área são gerados artificialmente. Não utilize estes valores para decisões financeiras.</p>
+    </article>
+   </section>
+   <section class="screen" id="screen-analise" aria-label="Análise e riscos">
+    <div class="pagehead"><p>INTELIGÊNCIA DE CENÁRIOS</p><h2>Explicável. Nunca impulsiva.</h2><span>A análise é calculada na API da nuvem. Qualquer falha de rede resulta em SEM TRADE.</span></div>
+    <div class="panel verdict">
+     <div class="eyebrow">LEITURA TÉCNICA DE DEMONSTRAÇÃO</div>
+     <h2 id="tech-status">AGUARDAR</h2><p id="tech-reason">Inicie o replay para analisar uma amostra.</p>
+     <div class="detail"><span>Origem</span><strong>100% SINTÉTICA</strong></div>
+     <div class="detail"><span>Cálculo</span><strong id="calculation-source">Aguardando API cloud</strong></div>
+     <div class="detail"><span>Última resposta</span><strong id="analysis-clock">—</strong></div>
+    </div>
+    <div class="panel veto">
+     <div class="heading-row"><div><span class="eyebrow">MOTOR DE RISCO INDEPENDENTE</span><h3>Motivos do veto</h3></div><span class="badge-icon">🔒</span></div>
+     <div class="risk-list" id="risk-list"><div>Somente dados sintéticos; sem entrada no mercado real.</div><div>Protocolo de pausa ainda em vigor.</div></div>
+     <div class="warn-block">Mesmo no futuro, um cenário técnico favorável só poderá gerar um alerta educativo após validação de licença, dados, custos, testes e regras de risco. A execução permanecerá manual.</div>
+    </div>
+    <div class="panel">
+     <div class="heading-row"><div><span class="eyebrow">RELATÓRIO</span><h3>Resumo do cenário</h3></div></div>
+     <pre id="report-text">Aguardando análise.</pre>
+     <button class="btn outline wide" id="copy-report">⧉ Copiar relatório</button>
+    </div>
+   </section>
+   <section class="screen" id="screen-diario" aria-label="Diário de estudos">
+    <div class="pagehead"><p>DISCIPLINA</p><h2>Seu diário de decisões.</h2><span>Registre o que observou e, principalmente, quando escolheu ficar de fora.</span></div>
+    <article class="panel">
+     <div class="eyebrow">NOVO REGISTRO</div>
+     <label class="field">Minha observação<textarea id="note" rows="4" maxlength="800" placeholder="Ex.: tendência parecia forte, mas não havia dados reais confiáveis. Decisão: não operar."></textarea></label>
+     <button class="btn primary wide" id="save-note">＋ Salvar anotação</button>
+     <p class="hint">Nesta primeira demonstração, as anotações ficam somente neste navegador. Use Exportar para fazer sua cópia; ainda não há sincronização privada entre aparelhos.</p>
+    </article>
+    <article class="panel">
+     <div class="heading-row"><div><span class="eyebrow">HISTÓRICO DE ESTUDO</span><h3>Anotações</h3></div><button class="small-btn" id="export">Exportar .csv ↗</button></div>
+     <div id="journal" class="journal-empty">Nenhuma anotação ainda.</div>
+    </article>
+   </section>
+   <section class="screen" id="screen-sistema" aria-label="Sistema e segurança">
+    <div class="pagehead"><p>AMBIENTE CLOUD</p><h2>Transparência total.</h2><span>Nunca confundiremos uma demonstração com dados da bolsa.</span></div>
+    <div class="panel">
+     <div class="heading-row"><div><span class="eyebrow">STATUS DOS SERVIÇOS</span><h3>Infraestrutura</h3></div><button class="small-btn" id="refresh-status">↻ Verificar</button></div>
+     <div class="detail"><span>API na nuvem</span><strong id="api-status">Verificando</strong></div>
+     <div class="detail"><span>Motor da análise</span><strong id="api-analysis">Aguardando teste</strong></div>
+     <div class="detail"><span>Feed B3 / ProfitDLL</span><strong class="redtext">DESLIGADO</strong></div>
+     <div class="detail"><span>Licença Market Data</span><strong>Não validada</strong></div>
+     <div class="detail"><span>Roteamento de ordens</span><strong class="redtext">INEXISTENTE</strong></div>
+     <div class="detail"><span>Quem executa ordens</span><strong>Usuário, no Profit Mobile</strong></div>
+    </div>
+    <div class="panel">
+     <div class="eyebrow">PRÓXIMAS INTEGRAÇÕES</div>
+     <div class="step"><span>01</span><div><b>Confirmar DLL Feed</b><small>Ativação, uso remoto e direitos sobre dados da B3.</small></div></div>
+     <div class="step"><span>02</span><div><b>Servidor Windows privado</b><small>Executar apenas ProfitDLL Market Data, após orçamento e autorização.</small></div></div>
+     <div class="step"><span>03</span><div><b>Painel protegido por login</b><small>Somente sinais e análise próprios, nunca uma API pública de ticks.</small></div></div>
+     <div class="step"><span>04</span><div><b>Shadow mode</b><small>Comparar análises com o mercado sem executar ordens.</small></div></div>
+    </div>
+    <div class="links"><a href="https://github.com/vhbernardo11/CONTROLE_ESTOQUE_MOBILE/pull/1" target="_blank" rel="noopener noreferrer">Código em desenvolvimento ↗</a><a href="https://app.notion.com/p/3f5fd6de0b48817f8469d379d46ad417" target="_blank" rel="noopener noreferrer">Plano técnico no Notion ↗</a></div>
+    <p class="legal">Protótipo experimental para estudo e simulação, não um serviço de recomendação financeira. Pode haver perdas ao operar futuros. Nenhuma ação neste site alcança a corretora.</p>
+   </section>
+  </main>
+ </div>
+ <nav class="bottomnav" aria-label="Seções do Copiloto">
+  <button class="nav active" data-target="painel" aria-current="page"><span>◫</span>Painel</button>
+  <button class="nav" data-target="analise"><span>◇</span>Análise</button>
+  <button class="nav" data-target="diario"><span>▤</span>Diário</button>
+  <button class="nav" data-target="sistema"><span>⚙</span>Sistema</button>
+ </nav>
+ <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
