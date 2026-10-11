@@ -1,0 +1,46 @@
+name: WIN 2.0 - validar Colab sem executar DLL
+on:
+  push:
+    branches: [feature/copiloto-v2-marketdata-readonly-20261010]
+    paths:
+      - 'copiloto_v2/colab/**'
+      - '.github/workflows/copiloto-colab-static.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validar estrutura do notebook, Python e ausência de credenciais
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, ast
+          p=Path('copiloto_v2/colab/copiloto_profitdll_cloud.ipynb')
+          notebook=json.loads(p.read_text(encoding='utf-8'))
+          assert notebook['nbformat']==4
+          assert len(notebook['cells'])==7
+          assert notebook['cells'][0]['cell_type']=='markdown'
+          for i,cell in enumerate(notebook['cells'][1:],1):
+              assert cell['cell_type']=='code'
+              assert not cell['outputs']
+              ast.parse(''.join(cell['source']), filename=f'cell_{i}.py')
+          contents=p.read_text(encoding='utf-8')
+          assert '31532251840' not in contents
+          assert 'Vh010939' not in contents
+          assert 'DLLInitializeLogin(' not in contents
+          assert 'SendOrder(' not in contents
+          assert 'DLLInitializeMarketLogin' in contents
+          assert 'getpass' in contents
+          assert 'from google.colab' not in contents  # notebook is independent of Colab-specific imports
+          print('Colab: 7 células válidas, código sintático OK, sem credenciais fixas ou roteamento.')
+          PY
